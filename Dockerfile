@@ -17,7 +17,8 @@ RUN apk -U add \
         libconfig-dev \
         libsndfile-dev \
         mosquitto-dev \
-        xmltoman
+        xmltoman \
+        pulseaudio-dev
 
 # ALAC Build System:
 FROM builder-base AS builder-alac
@@ -56,7 +57,9 @@ RUN 	./configure \
               --with-mpris-interface \
               --with-mqtt-client \
               --with-apple-alac \
-              --with-convolution
+              --with-convolution \
+              --with-pa
+              
 RUN 	make -j $(nproc)
 RUN 	make install
 
@@ -76,7 +79,8 @@ RUN 	apk add \
               mosquitto-libs \
               su-exec \
               libgcc \
-              libgc++
+              libgc++ \
+              libpulse
 
 RUN 	rm -rf  /lib/apk/db/*
 
@@ -98,4 +102,3 @@ RUN 	addgroup -g 29 docker_audio && addgroup shairport-sync docker_audio
 COPY 	start.sh /
 
 ENTRYPOINT [ "/start.sh" ]
-
